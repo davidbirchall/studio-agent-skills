@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write
-  id-token: write
 
 jobs:
   publish:
@@ -18,7 +17,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '18'
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: 'https://npm.pkg.github.com'
 
       - name: Verify tag matches package.json version
         run: |
@@ -30,10 +29,10 @@ jobs:
           fi
           echo "✅ Version match: ${TAG_VERSION}"
 
-      - name: Publish to npm
-        run: |
-          npm config set provenance true
-          npm publish
+      - name: Publish to GitHub Packages
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         uses: actions/create-release@v1
@@ -43,7 +42,7 @@ jobs:
           tag_name: ${{ github.ref_name }}
           release_name: Skills Library ${{ github.ref_name }}
           body: |
-            Published @davidbirchall/squad-skills to npm.
+            Published @davidbirchall/squad-skills to GitHub Packages.
 
             **Installation:**
             ```bash
