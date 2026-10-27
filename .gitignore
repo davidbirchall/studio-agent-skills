@@ -26,14 +26,20 @@ build/
 .npm/
 .npmrc
 
+# Internal documentation (implementation guides, not published)
+DELIVERY.md
+RELEASE_CHECKLIST.md
+docs/
+
+# Project setup & configuration (local to this repo, not published)
+.copilot/
+.github/agents/
+.github/copilot-instructions.md
+.mcp.json
+
 # Squad: ignore runtime state (logs, inbox, sessions)
 # Note: .squad/casting/* is identity and MUST be committed to main, not ignored
-.squad/orchestration-log/
-.squad/log/
-.squad/decisions/inbox/
-.squad/sessions/
-.squad/.scratch/
-.squad/.cache/
+.squad/
 
 # Squad: SubSquad activation file (local to this machine)
 .squad-workstream
@@ -45,5 +51,5 @@ coverage/
 # Temporary files
 *.tmp
 *.bak
-.DS_Store
+
 
