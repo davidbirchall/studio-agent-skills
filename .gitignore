@@ -53,3 +53,6 @@ coverage/
 *.bak
 
 
+
+# Squad: CI workflows (local to this machine)
+.github/workflows/squad-*.yml
