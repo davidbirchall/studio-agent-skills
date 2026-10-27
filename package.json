@@ -7,9 +7,6 @@
     "type": "git",
     "url": "https://github.com/davidbirchall/studio-agent-skills"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "files": [
     ".github/skills",
     "SKILLS_REGISTRY.md"
@@ -26,4 +23,3 @@
     "node": ">=18.0.0"
   }
 }
-
