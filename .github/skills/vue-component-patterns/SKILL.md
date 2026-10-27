@@ -10,41 +10,85 @@ Standardized patterns for building consistent, maintainable, and reusable Vue 3 
 
 ## Guiding Principles
 
-1. **Composition API + `<script setup>`** — Modern, concise, type-safe
-2. **TypeScript for all props/emits** — Catch errors at build time, better IDE support
-3. **Break large components into sub-components** — Keep each component focused and testable
-4. **Extract shared logic into composables** — Avoid duplication, name with `use*` convention
-5. **Prop drilling is a smell** — Use `provide/inject` for deeply nested data
-6. **Performance-aware** — Use `computed` for derived state, avoid unnecessary reactivity
+1. **Design is the source of truth** — Components implement design specs exactly, not creative interpretations
+2. **Atomic Design hierarchy** — Atoms → Molecules → Organisms → Templates → Pages
+3. **Composition API + `<script setup>`** — Modern, concise, type-safe
+4. **TypeScript for all props/emits** — Catch errors at build time, better IDE support
+5. **Break large components into sub-components** — Keep each component focused and testable
+6. **Extract shared logic into composables** — Avoid duplication, name with `use*` convention
+7. **Prop drilling is a smell** — Use `provide/inject` for deeply nested data
+8. **Performance-aware** — Use `computed` for derived state, avoid unnecessary reactivity
+9. **Scoped CSS styling** — Style encapsulation, no global styles, design fidelity
 
 ## Template Structure
+
+### Atomic Design Hierarchy
+
+Follow atomic design principles to organize components by complexity and reusability:
+
+```
+components/
+├── atoms/                           # Single responsibility, reusable building blocks
+│   ├── Button/
+│   ├── Input/
+│   ├── Label/
+│   ├── Icon/
+│   └── Badge/
+├── molecules/                       # Simple component groups, multiple atoms
+│   ├── FormField/                   # Label + Input + Error
+│   ├── SearchBox/                   # Input + Icon + Button
+│   ├── Card/                        # Container with header/body structure
+│   └── NavItem/                     # Link + Icon + Badge
+├── organisms/                       # Complex components, multiple molecules/atoms
+│   ├── Modal/                       # Header + Body + Footer (molecules + atoms)
+│   ├── Form/                        # Multiple FormFields (molecules)
+│   ├── Navigation/                  # Multiple NavItems (molecules)
+│   ├── DataTable/                   # Header + Rows + Pagination
+│   └── Sidebar/                     # Multiple sections, nested atoms/molecules
+├── templates/                       # Page-level component structure (rarely need to code)
+│   ├── DashboardTemplate.vue        # Layout: Sidebar + Header + Content
+│   └── FormTemplate.vue
+└── pages/                           # Full page implementations
+    ├── Dashboard.vue
+    └── Settings.vue
+```
+
+**Hierarchy rules:**
+- **Atoms** — Cannot be broken down further (Button, Input, Icon, Badge)
+- **Molecules** — Combine 2+ atoms into a functional unit (FormField = Label + Input)
+- **Organisms** — Complex sections combining molecules/atoms (Modal, Form, DataTable)
+- **Templates** — Page layout (rarely Vue components — usually just container structure)
+- **Pages** — Full implementations combining templates + data
+
+**Benefits:**
+- ✅ Clear component scope and responsibility
+- ✅ Atomic components are highly reusable
+- ✅ Easier to refactor — know exactly what breaks
+- ✅ Design system alignment — mirrors Figma component hierarchy
+- ✅ Scalability — new features use existing atoms/molecules
 
 ### File Organization
 
 ```
 components/
-├── Button/
-│   ├── Button.vue                    # Main export
-│   ├── ButtonGroup.vue               # Sub-component
-│   └── index.ts                      # Named exports
-├── Modal/
-│   ├── Modal.vue
-│   ├── ModalHeader.vue
-│   ├── ModalBody.vue
-│   ├── ModalFooter.vue
-│   └── index.ts
-└── Form/
-    ├── Form.vue
-    ├── FormField.vue
-    ├── FormError.vue
-    └── index.ts
-```
-
-**Export convention (index.ts):**
-```typescript
-export { default as Button } from './Button.vue'
-export { default as ButtonGroup } from './ButtonGroup.vue'
-export type { ButtonProps, ButtonEmits } from './Button.vue'
+├── atoms/
+│   └── Button/
+│       ├── Button.vue                # Main export
+│       ├── Button.test.ts
+│       └── index.ts
+├── molecules/
+│   └── FormField/
+│       ├── FormField.vue             # Main export
+│       ├── FormField.test.ts
+│       └── index.ts
+└── organisms/
+    └── Modal/
+        ├── Modal.vue
+        ├── ModalHeader.vue           # Sub-component for Modal (molecule-level)
+        ├── ModalBody.vue
+        ├── ModalFooter.vue
+        ├── Modal.test.ts
+        └── index.ts
 ```
 
 ### Component Size Guidelines
@@ -62,6 +106,72 @@ export type { ButtonProps, ButtonEmits } from './Button.vue'
 - ✅ Separate control/state flows
 - ✅ Reusable in other contexts
 - ❌ DON'T over-fragment (every div isn't a component)
+
+## Design-Driven Development
+
+### Design is the Source of Truth
+
+Every component implements a design specification exactly. The design file (Figma, etc.) defines:
+- Visual appearance (spacing, sizing, colors, typography)
+- Component states (default, hover, active, disabled, loading, error)
+- Interactions (what happens on click, hover, focus)
+- Responsive behavior (breakpoints, stacking, visibility)
+
+**Component contract:**
+1. Review design in Figma/design tool
+2. Extract component spec (props, variants, states)
+3. Implement exactly as designed
+4. Measure against design — pixel-perfect where possible
+5. Implement all states shown in design
+
+**Props from Design:**
+- Each Figma variant becomes a prop (e.g., `variant="primary"`, `size="lg"`)
+- Each documented state becomes a prop (e.g., `disabled`, `loading`, `isActive`)
+- Each responsive breakpoint is a design decision (not a guess)
+
+### Design Handoff Checklist
+
+Before implementing a component:
+
+- [ ] Design file link documented in component file (comment at top)
+- [ ] All variants mapped to props (primary/secondary variants → `variant` prop)
+- [ ] All states shown in design (hover, focus, disabled, error, loading)
+- [ ] Responsive behavior specified (mobile/tablet/desktop layouts)
+- [ ] Typography/spacing follows design tokens (no arbitrary pixel values)
+- [ ] Colors use design color variables (not hardcoded hex)
+- [ ] Animations/transitions match design specs
+- [ ] Accessibility considered (focus states, ARIA labels, keyboard nav)
+
+**Example design handoff:**
+```typescript
+/**
+ * Button Component
+ * 
+ * Design: https://figma.com/file/xxx/Design?node-id=123
+ * 
+ * Variants (from Figma):
+ * - Primary (default) → variant="primary"
+ * - Secondary → variant="secondary"
+ * - Danger → variant="danger"
+ * - Ghost → variant="ghost"
+ * 
+ * States (from Figma):
+ * - Default / Hover / Active / Focus / Disabled / Loading
+ * - All states must match design exactly
+ * 
+ * Sizes (from Figma):
+ * - Small (28px) → size="sm"
+ * - Medium (36px) → size="md"
+ * - Large (44px) → size="lg"
+ */
+
+export interface ButtonProps {
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost'
+  size?: 'sm' | 'md' | 'lg'
+  disabled?: boolean
+  loading?: boolean
+}
+```
 
 ## Props & Emits Pattern
 
@@ -431,6 +541,188 @@ const modal = inject<ModalContext>('modal')
 </List>
 ```
 
+## Scoped CSS Styling
+
+Use scoped CSS for style encapsulation. Styles are automatically scoped to the component and won't leak to other components or global styles.
+
+### Scoped CSS Basics
+
+```vue
+<template>
+  <div class="button" :class="buttonClasses">
+    <slot />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+
+const props = withDefaults(defineProps<{ variant?: 'primary' | 'secondary' }>(), {
+  variant: 'primary',
+})
+
+const buttonClasses = computed(() => ({
+  'button--primary': props.variant === 'primary',
+  'button--secondary': props.variant === 'secondary',
+}))
+</script>
+
+<style scoped>
+/* These styles ONLY apply to this component */
+.button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button--primary {
+  background-color: #0066cc;
+  color: white;
+}
+
+.button--primary:hover {
+  background-color: #0052a3;
+}
+
+.button--secondary {
+  background-color: #e0e0e0;
+  color: #333;
+}
+</style>
+```
+
+**Key points:**
+- ✅ `<style scoped>` automatically prefixes classes with component scope
+- ✅ No naming collisions across components
+- ✅ Styles encapsulated, won't leak to child components
+- ✅ Child components can still style themselves
+
+### CSS Organization
+
+```vue
+<style scoped>
+/* 1. Base component styles */
+.button {
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+/* 2. Variants */
+.button--primary { /* primary variant */ }
+.button--secondary { /* secondary variant */ }
+
+/* 3. Sizes */
+.button--sm { /* small size */ }
+.button--md { /* medium size */ }
+
+/* 4. States */
+.button:hover { /* hover state */ }
+.button:active { /* active state */ }
+.button:disabled { /* disabled state */ }
+.button:focus { /* focus state */ }
+
+/* 5. Responsive */
+@media (max-width: 640px) {
+  .button { /* mobile styles */ }
+}
+
+/* 6. Modifiers/combinations */
+.button.is-loading { /* loading state */ }
+.button.has-icon { /* button with icon */ }
+</style>
+```
+
+### CSS Variables for Design Tokens
+
+Use CSS variables for design tokens (colors, spacing, typography):
+
+```vue
+<style scoped>
+:root {
+  /* Define design tokens */
+  --color-primary: #0066cc;
+  --color-primary-hover: #0052a3;
+  --color-text: #333;
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --font-weight-regular: 400;
+  --font-weight-bold: 600;
+  --border-radius-sm: 0.25rem;
+  --transition-fast: 0.2s ease;
+}
+
+.button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.button--primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.button--primary:hover {
+  background-color: var(--color-primary-hover);
+}
+</style>
+```
+
+**Benefits:**
+- ✅ Consistent spacing/colors across components
+- ✅ Easy to theme (swap variable values)
+- ✅ Single source of truth for design tokens
+- ✅ Easy updates (change token once, affects all components)
+
+### Avoid Tailwind
+
+Do **not** use Tailwind CSS utility classes. Use scoped CSS instead:
+
+```typescript
+// ❌ DON'T do this
+<div class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+
+// ✅ DO this
+<div class="button button--primary">
+```
+
+**Why scoped CSS over Tailwind for design systems:**
+- Scoped CSS enforces style encapsulation (no accidental overwrites)
+- Easier to see component styles at a glance (all in one place)
+- Design tokens are explicit (CSS variables)
+- Smaller build output (less utility class bloat)
+- Design fidelity (matches Figma spec exactly)
+
+### Deep Selectors (When Needed)
+
+If you need to style a child component's scoped CSS (rare):
+
+```vue
+<template>
+  <Modal>
+    <Button />  <!-- Need to style Button from Modal -->
+  </Modal>
+</template>
+
+<style scoped>
+/* Use :deep() to pierce into child component's scoped styles */
+:deep(.button) {
+  width: 100%; /* Make child button full width */
+}
+</style>
+```
+
+**Use sparingly** — usually indicates child component needs a prop instead.
+
 ## Composables Pattern
 
 ### Naming Convention
@@ -667,6 +959,7 @@ const componentClasses = computed(() => ({
 - `vue-state-management` — Pinia patterns, when to lift state
 - `vue-testing-strategy` — Component testing approach
 - `vue-performance` — Optimization techniques
+- `vue-styling-architecture` — Design tokens, CSS variables, component styling strategy
 
 ---
 
