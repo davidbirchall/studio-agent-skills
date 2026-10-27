@@ -9,7 +9,8 @@
   },
   "files": [
     ".github/skills",
-    "SKILLS_REGISTRY.md"
+    "SKILLS_REGISTRY.md",
+    "README.md"
   ],
   "keywords": [
     "squad",

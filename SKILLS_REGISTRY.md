@@ -10,6 +10,8 @@ Install in any Squad project:
 npm install @davidbirchall/squad-skills --save-dev
 ```
 
+The package is available on the public npm registry — no authentication required.
+
 Then reference skills from `node_modules/@davidbirchall/squad-skills/.github/skills/` in your coordinator instructions or `.copilot/mcp-config.json`.
 
 ## Skills Directory
