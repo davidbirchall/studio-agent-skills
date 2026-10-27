@@ -1,6 +1,6 @@
 {
   "name": "@davidbirchall/squad-skills",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Centralized Squad skills library for AI team coordination, reusable across all projects",
   "license": "MIT",
   "repository": {
