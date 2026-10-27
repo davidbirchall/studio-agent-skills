@@ -7,7 +7,7 @@ on:
 
 permissions:
   contents: write
-  packages: write
+  id-token: write
 
 jobs:
   publish:
@@ -31,9 +31,9 @@ jobs:
           echo "✅ Version match: ${TAG_VERSION}"
 
       - name: Publish to npm
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm config set provenance true
+          npm publish
 
       - name: Create Release
         uses: actions/create-release@v1
