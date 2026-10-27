@@ -1,0 +1,55 @@
+name: Publish Skills Package
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://npm.pkg.github.com'
+
+      - name: Verify tag matches package.json version
+        run: |
+          TAG_VERSION="${{ github.ref_name }}"
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if [ "v${PKG_VERSION}" != "${TAG_VERSION}" ]; then
+            echo "❌ Tag version (${TAG_VERSION}) does not match package.json version (v${PKG_VERSION})"
+            exit 1
+          fi
+          echo "✅ Version match: ${TAG_VERSION}"
+
+      - name: Publish to GitHub Packages
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Skills Library ${{ github.ref_name }}
+          body: |
+            Published @davidbirchall/squad-skills to GitHub Packages.
+
+            **Installation:**
+            ```bash
+            npm install @davidbirchall/squad-skills@${{ github.ref_name }}
+            ```
+
+            **Skills included:** See SKILLS_REGISTRY.md for full catalog.
+          draft: false
+          prerelease: false

@@ -1,0 +1,29 @@
+{
+  "name": "@davidbirchall/squad-skills",
+  "version": "1.0.0",
+  "description": "Centralized Squad skills library for AI team coordination, reusable across all projects",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davidbirchall/studio-agent-skills"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    ".github/skills",
+    "SKILLS_REGISTRY.md"
+  ],
+  "keywords": [
+    "squad",
+    "ai-team",
+    "copilot",
+    "skills",
+    "prompt-library"
+  ],
+  "author": "davidbirchall",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+
