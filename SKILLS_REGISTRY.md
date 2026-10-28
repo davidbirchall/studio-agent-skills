@@ -77,6 +77,14 @@ Documented practices, conventions, and decision frameworks used throughout Squad
 | **squad-conventions** | Core conventions and patterns used in the Squad codebase | Baseline context | `.github/skills/squad-conventions/SKILL.md` |
 | **squad-help** | How to actually use Squad — team setup, commands, initialization | First-time use | `.github/skills/squad-help/SKILL.md` |
 
+### Creative & Ideas
+
+Tools for capturing, developing, and preserving ideas systematically.
+
+| Skill | Purpose | When to load | Location |
+|-------|---------|--------------|----------|
+| **idea-capture** | Capture, clarify, and develop creative ideas (mechanics, concepts, story, technology, etc.) with enough substance for future revisiting | Recording a new idea | `.github/skills/idea-capture/SKILL.md` |
+
 ### Vue 3 Development
 
 Reusable patterns and standards for Vue 3 projects using Composition API, Pinia, TanStack Query, and TypeScript.
@@ -153,7 +161,7 @@ MIT — reuse freely within the @davidbirchall scope and with attribution.
 
 ---
 
-**Last updated:** 2026-10-27  
+**Last updated:** 2026-10-28  
 **Package:** @davidbirchall/squad-skills  
 **Registry:** GitHub Packages  
-**Total Skills:** 26 (19 Coordinator + 7 Vue 3 Development)
+**Total Skills:** 27 (19 Coordinator + 7 Vue 3 Development + 1 Creative)
