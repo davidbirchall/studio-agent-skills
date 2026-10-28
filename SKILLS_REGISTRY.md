@@ -77,6 +77,16 @@ Documented practices, conventions, and decision frameworks used throughout Squad
 | **squad-conventions** | Core conventions and patterns used in the Squad codebase | Baseline context | `.github/skills/squad-conventions/SKILL.md` |
 | **squad-help** | How to actually use Squad — team setup, commands, initialization | First-time use | `.github/skills/squad-help/SKILL.md` |
 
+### Vue 3 Development
+
+Reusable patterns and standards for Vue 3 projects using Composition API, Pinia, TanStack Query, and TypeScript.
+
+| Skill | Purpose | When to load | Location |
+|-------|---------|--------------|----------|
+| **vue-component-patterns** | Composition API components, TypeScript props/emits, atomic design hierarchy, design-driven development, scoped CSS styling | Starting new Vue component | `.github/skills/vue-component-patterns/SKILL.md` |
+| **vue-state-management** | Pinia store patterns, state boundaries (dumb components, smart containers), TanStack Query integration, application vs component state | Implementing state management | `.github/skills/vue-state-management/SKILL.md` |
+| **vue-testing-strategy** | Vitest + Vue Testing Library, presenter/container testing, store testing, TanStack Query testing with MSW, Playwright E2E | Writing tests before features | `.github/skills/vue-testing-strategy/SKILL.md` |
+
 ## Skill Usage in Projects
 
 ### Option 1: Copy Skills into Your Project (Recommended for Private Use)
