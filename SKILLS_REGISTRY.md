@@ -87,6 +87,9 @@ Reusable patterns and standards for Vue 3 projects using Composition API, Pinia,
 | **vue-container-presenter-pattern** | Smart Container / Dumb Presenter split, clear separation of data management and presentation, reusable presenters, testable containers | Structuring feature components | `.github/skills/vue-container-presenter-pattern/SKILL.md` |
 | **vue-state-management** | Pinia store patterns, state boundaries (dumb components, smart containers), TanStack Query integration, application vs component state | Implementing state management | `.github/skills/vue-state-management/SKILL.md` |
 | **vue-testing-strategy** | Vitest + Vue Testing Library, presenter/container testing, store testing, TanStack Query testing with MSW, Playwright E2E | Writing tests before features | `.github/skills/vue-testing-strategy/SKILL.md` |
+| **vue-styling-architecture** | Design token system, CSS variables for theming, scoped CSS patterns, dark mode support via prefers-color-scheme, semantic class naming | Implementing component styles | `.github/skills/vue-styling-architecture/SKILL.md` |
+| **vue-form-validation** | Form state management, client + server validation, error display patterns, accessibility, submission flow, multi-step forms | Building forms | `.github/skills/vue-form-validation/SKILL.md` |
+| **vue-accessibility** | Semantic HTML, ARIA attributes, keyboard navigation, focus management, accessible components, axe testing, WCAG 2.1 AA compliance | Ensuring component accessibility | `.github/skills/vue-accessibility/SKILL.md` |
 
 ## Skill Usage in Projects
 
@@ -152,4 +155,5 @@ MIT — reuse freely within the @davidbirchall scope and with attribution.
 
 **Last updated:** 2026-10-27  
 **Package:** @davidbirchall/squad-skills  
-**Registry:** GitHub Packages
+**Registry:** GitHub Packages  
+**Total Skills:** 26 (19 Coordinator + 7 Vue 3 Development)
