@@ -1,0 +1,34 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-frontend",
+  "version": "0.8.0",
+  "description": "Frontend skills for Vue 3 / Nuxt 3 / TypeScript: architecture, state management, atomic design, design systems, CSS, accessibility, testing, Storybook, tooling (ESLint/Prettier/TypeScript), Turborepo, TanStack Query, forms, performance, security, build tooling, internationalization, API client patterns, component library publishing, and animation and motion.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "vue",
+    "nuxt",
+    "css",
+    "accessibility",
+    "testing",
+    "atomic-design",
+    "storybook",
+    "eslint",
+    "prettier",
+    "typescript",
+    "turborepo",
+    "tanstack-query",
+    "forms",
+    "performance",
+    "security",
+    "api-client",
+    "publishing",
+    "animation",
+    "architecture",
+    "state-management",
+    "design-systems",
+    "build-tooling",
+    "i18n"
+  ]
+}

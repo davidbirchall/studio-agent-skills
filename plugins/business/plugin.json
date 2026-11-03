@@ -1,0 +1,17 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-business",
+  "version": "0.1.0",
+  "description": "Solo-business skills for individual makers of software and games: licensing and IP, privacy and data retention, pricing and monetisation, payments and billing, and product analytics. Provider-neutral and not legal advice.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "business",
+    "licensing",
+    "privacy",
+    "pricing",
+    "payments",
+    "analytics"
+  ]
+}

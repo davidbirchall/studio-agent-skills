@@ -1,0 +1,19 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-game",
+  "version": "0.1.0",
+  "description": "Engine-agnostic game design skills: game idea, game design, mechanic design, systems design, progression design, level design, and balance, with playtesting guidance.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "game-design",
+    "game-idea",
+    "mechanics",
+    "systems",
+    "progression",
+    "level-design",
+    "balance",
+    "playtesting"
+  ]
+}

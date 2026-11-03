@@ -1,0 +1,21 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-creative-technology",
+  "version": "0.1.0",
+  "description": "Creative technology and asset pipeline skills for Unity: Blender workflows, 3D and 2D asset pipelines, asset optimisation, material and shader workflows, VFX implementation, animation integration, and audio integration. Covers technically preparing and integrating assets, not creating them.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "creative-technology",
+    "asset-pipeline",
+    "blender",
+    "unity",
+    "3d-assets",
+    "2d-assets",
+    "shaders",
+    "vfx",
+    "animation",
+    "audio"
+  ]
+}

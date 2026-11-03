@@ -1,0 +1,18 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-knowledge",
+  "version": "0.2.0",
+  "description": "Domain-agnostic knowledge-work skills: research practice, knowledge capture, decision-making, documentation, and review. A chained workflow from question to evidence, notes, decisions, written artifacts, and feedback.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "research",
+    "knowledge-management",
+    "note-taking",
+    "decision-making",
+    "documentation",
+    "review",
+    "feedback"
+  ]
+}

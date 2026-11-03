@@ -1,0 +1,32 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-backend",
+  "version": "0.4.0",
+  "description": "Backend skills for Node.js / NestJS / Fastify / Prisma / TypeScript: Node and NestJS conventions, architecture, API design, validation, database design and data access, caching, authentication and authorization, security, testing, background processing, error handling, observability, plus Fastify, RxJS, OpenAPI/Swagger, and Postman.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "nodejs",
+    "nestjs",
+    "fastify",
+    "rxjs",
+    "openapi",
+    "swagger",
+    "prisma",
+    "uuid",
+    "vitest",
+    "typescript",
+    "oxlint",
+    "prettier",
+    "axios",
+    "postman",
+    "security",
+    "observability",
+    "performance",
+    "caching",
+    "queues",
+    "authentication",
+    "architecture"
+  ]
+}

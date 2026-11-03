@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-platform-engineering",
+  "version": "0.1.0",
+  "description": "Provider-neutral DevOps and platform engineering skills: git workflows, monorepo management, build systems, CI/CD, environment configuration, secrets management, containerization, deployment patterns, infrastructure as code, monitoring and observability, and release management.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "devops",
+    "platform-engineering",
+    "ci-cd",
+    "git",
+    "monorepo",
+    "containers",
+    "deployment",
+    "infrastructure-as-code",
+    "secrets",
+    "observability",
+    "release-management"
+  ]
+}

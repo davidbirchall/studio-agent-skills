@@ -1,0 +1,18 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-product",
+  "version": "0.1.0",
+  "description": "Product process skills: idea shaping, discovery, user research, UX design, product definition (PRD), and feature design.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "product",
+    "idea",
+    "discovery",
+    "user-research",
+    "ux",
+    "prd",
+    "feature-design"
+  ]
+}

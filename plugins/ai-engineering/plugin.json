@@ -1,0 +1,23 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-ai-engineering",
+  "version": "0.2.0",
+  "description": "AI engineering skills for LLM-powered applications and agent systems: LLM integration, prompt engineering, agent design and orchestration, tool and MCP integration, context engineering, retrieval-augmented generation, evaluation, testing, security, and observability.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "ai",
+    "llm",
+    "agents",
+    "orchestration",
+    "prompt-engineering",
+    "mcp",
+    "tool-calling",
+    "context-engineering",
+    "rag",
+    "evaluation",
+    "ai-security",
+    "observability"
+  ]
+}

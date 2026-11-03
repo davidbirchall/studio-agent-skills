@@ -1,28 +1,34 @@
 # Contributing to @davidbirchall/squad-skills
 
-Thank you for contributing! This guide explains how to add, update, or improve skills in the centralized library.
+Thank you for contributing! This guide explains how to add or update plugins and skills.
+
+## What is a Plugin?
+
+A **plugin** is a collection of related skills organized by domain. Each plugin lives in `plugins/{domain}/` with its own `plugin.json`, README, and skills subdirectory.
+
+See [README.md](./README.md) for the complete plugin catalog.
 
 ## What is a Skill?
 
-A **skill** is a self-contained prompt pattern that teaches Squad coordinators or agents how to handle a specific aspect of AI team coordination. Skills are:
+A **skill** is a self-contained prompt pattern that teaches Squad coordinators or agents how to handle a specific aspect of their domain. Skills are:
 
 - **Standalone** — readable and useful in isolation
 - **Composable** — work alongside other skills without conflicts
-- **Evergreen** — remain correct and useful as Squad evolves
+- **Evergreen** — remain correct and useful over time
 - **Examples-rich** — include concrete scenarios, not just theory
 
 ## Before You Contribute
 
-1. **Check the registry** — See if your idea already exists in [SKILLS_REGISTRY.md](./SKILLS_REGISTRY.md)
+1. **Check the plugin list** — See if your skill fits in an existing plugin in [README.md](./README.md)
 2. **Open an issue** — Describe your skill idea and get feedback before writing
-3. **Read existing skills** — Understand the format and depth by reading 2–3 similar skills in `.github/skills/`
+3. **Read existing skills** — Understand the format and depth by reading 2–3 similar skills in the plugin's `skills/` directory
 
-## Adding a New Skill
+## Adding a New Skill to a Plugin
 
 ### 1. Create the Skill Directory
 
 ```bash
-mkdir -p .github/skills/your-skill-name
+mkdir -p plugins/{plugin-name}/skills/your-skill-name
 ```
 
 ### 2. Write `SKILL.md`
@@ -30,11 +36,13 @@ mkdir -p .github/skills/your-skill-name
 Use this template:
 
 ```markdown
-# Your Skill Name
+---
+name: your-skill-name
+description: What this skill teaches and when an agent should load it.
+confidence: [low/medium/high]
+---
 
-**Location:** `.github/skills/your-skill-name/SKILL.md`  
-**Domain:** [Coordinator Protocol / Team Collaboration / Process & Discipline / Git & Workflow / Memory & Learning / Convention & Standards]  
-**When to load:** [Describe the trigger — e.g., "Before routing work", "On agent spawn", "When decisions conflict"]  
+# Your Skill Name
 
 ## Overview
 
@@ -43,7 +51,7 @@ One-sentence summary of what this skill teaches.
 Paragraph explaining:
 - What problem it solves
 - When it applies
-- How it relates to other Squad concepts
+- How it relates to other skills
 - Why it matters
 
 ## Core Concepts
@@ -77,111 +85,145 @@ Paragraph explaining:
 
 ## References
 
-- If skill references external docs, standards, or conventions, link them
-- Include relevant `.squad/` file paths
-- Link to related GitHub issues or discussions if applicable
-
----
-
-**Version:** 1.0  
-**Confidence:** [low / medium / high] — How well-tested this pattern is  
-**Last reviewed:** YYYY-MM-DD
+[External docs, standards, or conventions that inform this skill]
 ```
 
-### 3. Update SKILLS_REGISTRY.md
+### 3. Update Plugin README
 
-Add an entry to the appropriate domain in the registry:
-
-```markdown
-| **your-skill-name** | Brief description | Trigger (e.g., "Before routing work") | `.github/skills/your-skill-name/SKILL.md` |
-```
+Add your skill to the plugin's README.md skill list.
 
 ### 4. Commit & Open PR
 
 ```bash
-git checkout -b squad/add-your-skill-name
-git add .github/skills/your-skill-name/ SKILLS_REGISTRY.md
-git commit -m "feat: add 'your-skill-name' skill
+git checkout -b squad/{plugin-name}-add-{skill-name}
+git add plugins/{plugin-name}/skills/{skill-name}/
+git commit -m "feat({plugin-name}): add '{skill-name}' skill
 
 - Teaches [what the skill teaches]
 - Applies when [trigger condition]
 - Relates to [other skills]"
-git push origin squad/add-your-skill-name
+git push origin squad/{plugin-name}-add-{skill-name}
 ```
 
 ## Updating an Existing Skill
 
 ### 1. Edit the skill
 
-Make changes to `.github/skills/{skill-name}/SKILL.md`:
+Make changes to `plugins/{plugin-name}/skills/{skill-name}/SKILL.md`:
 - **Clarifications** — No behavior change, just clearer wording? Use PATCH version
 - **Content updates** — Adding examples or edge cases? Use MINOR version
-- **Breaking changes** — Changing the core contract or structure? Use MAJOR version
+- **Breaking changes** — Changing the core contract? Use MAJOR version
 
-### 2. Update version & date
+### 2. Update version & confidence
 
-At the bottom of the skill, bump the version and update "Last reviewed":
+At the top of the skill (YAML frontmatter):
 
 ```markdown
-**Version:** 1.1  
-**Confidence:** [update if needed]  
-**Last reviewed:** 2026-10-27
+---
+name: skill-name
+description: Updated description
+confidence: [low/medium/high]  # Update if needed
+---
 ```
 
 ### 3. Commit & Open PR
 
 ```bash
-git checkout -b squad/update-{skill-name}
-git add .github/skills/{skill-name}/SKILL.md
-git commit -m "docs: improve '{skill-name}' skill
+git checkout -b squad/{plugin-name}-update-{skill-name}
+git add plugins/{plugin-name}/skills/{skill-name}/SKILL.md
+git commit -m "docs({plugin-name}): improve '{skill-name}' skill
 
 - [What changed]
 - [Why it matters]"
-git push origin squad/update-{skill-name}
+git push origin squad/{plugin-name}-update-{skill-name}
 ```
+
+## Adding a New Plugin
+
+### 1. Create plugin structure
+
+```bash
+mkdir -p plugins/your-plugin-name/skills
+```
+
+### 2. Create `plugin.json`
+
+```json
+{
+  "name": "squad-skills-your-plugin-name",
+  "version": "1.0.0",
+  "description": "Your plugin description",
+  "author": "davidbirchall",
+  "skills": ["skill-one", "skill-two", "skill-three"]
+}
+```
+
+### 3. Create `README.md`
+
+Document the plugin's purpose and list its skills.
+
+### 4. Add skills
+
+Create skill directories under `skills/` following the SKILL.md template above.
+
+### 5. Update root README.md
+
+Add your plugin to the appropriate section in [README.md](./README.md).
 
 ## Review Checklist (for maintainers)
 
 Before merging a skill PR:
 
 - [ ] Skill is self-contained (readable without external references)
-- [ ] Triggers & "when to load" are clear
+- [ ] Description states when to load the skill clearly
 - [ ] Examples include real-world scenarios
 - [ ] Related skills are linked
 - [ ] No conflicting instructions with existing skills
-- [ ] Domain categorization is correct
-- [ ] SKILLS_REGISTRY.md is updated
-- [ ] Version follows semver rules
 - [ ] No secrets or sensitive examples included
+- [ ] Plugin README.md is updated
+- [ ] Confidence level is accurate
+
+## Installing Plugins
+
+Single plugin:
+
+```bash
+copilot plugin install ./plugins/your-plugin-name
+copilot plugin list
+```
+
+Stack of plugins:
+
+```bash
+scripts/install-stack.sh web      # or game, ai, process, all
+```
+
+See [README.md](./README.md) for available stacks.
 
 ## Publishing a Release
 
-1. **Update package.json version:**
-   ```bash
-   npm version patch  # or minor, or major
-   ```
+1. **Update versions** in all modified plugin `plugin.json` files
 
-2. **Commit & push:**
+2. **Update root package.json** if needed
+
+3. **Commit & push:**
    ```bash
-   git add package.json
-   git commit -m "chore: release v1.0.1"
+   git add plugins/ package.json
+   git commit -m "chore: release updates"
    git push
    ```
 
-3. **Create a git tag:**
+4. **Create a git tag:**
    ```bash
-   git tag v1.0.1
-   git push origin v1.0.1
+   git tag v1.1.0
+   git push origin v1.1.0
    ```
 
-   The GitHub Actions workflow [`.github/workflows/publish-skills.yml`](./.github/workflows/publish-skills.yml) will automatically:
-   - Verify version match
-   - Publish to GitHub Packages
-   - Create a GitHub Release
+   The GitHub Actions workflow automatically publishes to GitHub Packages.
 
 ## Skill Confidence Levels
 
-Skills use three confidence levels (bottom of each `SKILL.md`):
+Skills use three confidence levels (in frontmatter):
 
 | Level | Meaning | When to apply |
 |-------|---------|---------------|
@@ -196,8 +238,8 @@ When updating a skill, bump confidence only when:
 
 ## Questions?
 
-- 📖 Read [SKILLS_REGISTRY.md](./SKILLS_REGISTRY.md) for the full skill catalog
-- 🚀 See [README.md](./README.md) for usage patterns and examples
+- 📖 Read [README.md](./README.md) for the plugin catalog
+- 🚀 See individual plugin READMEs for skill details
 - 💬 Open an issue to discuss ideas before writing
 
 ---

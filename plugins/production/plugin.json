@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-production",
+  "version": "0.2.0",
+  "description": "Production-process skills for software, games, and creative projects: planning, scope, prioritisation, estimation, milestones, release, and retrospective.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "planning",
+    "scope",
+    "prioritisation",
+    "estimation",
+    "milestones",
+    "release",
+    "retrospective",
+    "production",
+    "project-management"
+  ]
+}

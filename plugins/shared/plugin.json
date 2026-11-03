@@ -1,0 +1,21 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-shared",
+  "version": "0.4.0",
+  "description": "Shared engineering capabilities that apply across frontend, backend, AI and game development: software architecture, technical design, TypeScript conventions, testing strategy, application security, performance engineering, code review, debugging, dependency management, and technical documentation.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "software-architecture",
+    "technical-design",
+    "typescript",
+    "testing-strategy",
+    "application-security",
+    "performance",
+    "code-review",
+    "debugging",
+    "dependency-management",
+    "documentation"
+  ]
+}

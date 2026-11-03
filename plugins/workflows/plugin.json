@@ -1,0 +1,16 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-workflows",
+  "version": "0.2.0",
+  "description": "End-to-end recipe skills that sequence the other plugins for common jobs: ship a web feature, add a chat capability, build a game feature, and cut a game build.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "workflow",
+    "recipe",
+    "end-to-end",
+    "feature",
+    "release"
+  ]
+}

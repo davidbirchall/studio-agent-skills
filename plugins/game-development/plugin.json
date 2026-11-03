@@ -1,0 +1,26 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-game-development",
+  "version": "0.4.0",
+  "description": "Game development engineering skills for Unity and C#: C# conventions, project patterns, architecture, editor workflows, asset management, gameplay and state systems, input, character controllers, cameras, UI, save/load, game AI, physics, procedural generation, performance, profiling, and build and release.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "unity",
+    "csharp",
+    "game-development",
+    "gameplay",
+    "input-system",
+    "cinemachine",
+    "addressables",
+    "ui-toolkit",
+    "save-load",
+    "game-ai",
+    "physics",
+    "procedural-generation",
+    "performance",
+    "profiling",
+    "build"
+  ]
+}

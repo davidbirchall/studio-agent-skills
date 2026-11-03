@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-data",
+  "version": "0.1.0",
+  "description": "Data engineering skills distinct from general backend work: SQL conventions, data modelling, database migrations, query optimisation, data integrity, search indexing, and data import and export.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "data",
+    "sql",
+    "postgresql",
+    "data-modelling",
+    "migrations",
+    "query-optimisation",
+    "data-integrity",
+    "search",
+    "import-export"
+  ]
+}

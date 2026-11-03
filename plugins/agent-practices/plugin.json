@@ -1,0 +1,18 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "squad-skills-agent-practices",
+  "version": "0.1.0",
+  "description": "Working practices for an AI agent serving one person: task decomposition, verifying before declaring done, asking versus assuming, minimal-change discipline, session handoff notes, delegation briefs, and skill authoring.",
+  "author": {
+    "name": "David Birchall"
+  },
+  "keywords": [
+    "agent",
+    "practices",
+    "task-decomposition",
+    "verification",
+    "handoff",
+    "delegation",
+    "skill-authoring"
+  ]
+}
