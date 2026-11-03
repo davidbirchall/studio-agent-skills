@@ -29,7 +29,8 @@ build/
 # Internal documentation (implementation guides, not published)
 DELIVERY.md
 RELEASE_CHECKLIST.md
-docs/
+# Note: docs/ IS published (ARCHITECTURE.md, SETUP_GUIDE.md, skill-design-guide.md)
+# so don't ignore it!
 
 # Project setup & configuration (local to this repo, not published)
 .copilot/

@@ -1,12 +1,13 @@
 # Setup Guide: Using @davidbirchall/squad-skills in Your Projects
 
-This guide explains how to install and use the centralized skills library across your Squad projects.
+This guide explains how to install and use the skills and plugins from the centralized library across your Squad projects.
 
 ## Prerequisites
 
 - **Node.js 18+** — Required for npm
 - **GitHub account** — For authenticating with GitHub Packages
 - **Git** — For cloning and pushing updates
+- **Copilot CLI** — For managing plugins
 
 ## Step 1: Configure GitHub Packages Authentication
 
@@ -21,14 +22,13 @@ chmod 600 ~/.npmrc
 
 1. Go to [GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)](https://github.com/settings/tokens)
 2. Click "Generate new token"
-3. Select scopes:
-   - ✅ `read:packages` — Read from GitHub Packages
+3. Select scope: `read:packages` (Read from GitHub Packages)
 4. Click "Generate token"
-5. Copy the token and paste it in the command above
+5. Copy and paste it in the command above
 
 **Better: Use GitHub CLI**
 
-If you have `gh` installed:
+If you have `gh` CLI installed:
 
 ```bash
 gh auth setup-git
@@ -36,83 +36,111 @@ gh auth setup-git
 
 This automatically handles authentication.
 
-## Step 2: Install Skills in a Project
+## Step 2: Install the Skills Package in a Project
 
-In your Squad project, add the package:
-
-```bash
-npm install @davidbirchall/squad-skills --save-dev
-```
-
-This adds it to `package.json` and downloads skills to `node_modules/`.
-
-## Step 3: Copy Skills to Your Project
-
-Option A (Recommended): Copy skills into your project's version control:
+In your Squad project root, add the package:
 
 ```bash
-# From your project root
-cp -r node_modules/@davidbirchall/squad-skills/.github/skills .github/
-
-# Commit them
-git add .github/skills
-git commit -m "chore: import squad skills v1.0.0"
+npm install --save-dev @davidbirchall/squad-skills
 ```
 
-Option B (Dynamic): Reference from node_modules in coordinator instructions:
+This adds it to `package.json` and downloads the package to `node_modules/`.
 
-```markdown
-Relevant skill: node_modules/@davidbirchall/squad-skills/.github/skills/squad/SKILL.md
+## Step 3: Install Plugins
+
+You now have access to all plugins. Install the ones your project needs.
+
+### Option A: Single Plugin
+
+```bash
+# Install a specific plugin
+copilot plugin install ./node_modules/@davidbirchall/squad-skills/plugins/frontend
+
+# Verify installation
+copilot plugin list
 ```
 
-**Recommendation:** Use Option A for most projects. It ensures skills are available even if `node_modules` is cleaned, and you can customize them per-project if needed.
+### Option B: Use a Stack (Multiple Plugins at Once)
 
-## Step 4: Use the Skills in Your Coordinator
+Stacks bundle related plugins for common use cases:
 
-Skills are now available in `.github/skills/`. Your Squad coordinator automatically discovers them.
+| Stack | Plugins | Use case |
+|-------|---------|----------|
+| `web` | shared, frontend, backend, data, platform-engineering, agent-practices, workflows | Full-stack web development |
+| `game` | shared, game-development, creative-technology, game, agent-practices, workflows | Game development |
+| `ai` | shared, backend, ai-engineering, platform-engineering, agent-practices, workflows | LLM and AI systems |
+| `process` | product, game, creative, production, knowledge, business | Solo business and creative process |
+| `all` | All plugins | Everything (not recommended unless needed) |
 
-To explicitly load a skill:
+Install a stack:
+
+```bash
+# Run from your project root
+./node_modules/@davidbirchall/squad-skills/scripts/install-stack.sh web
+# or: game, ai, process, all
+```
+
+## Step 4: Verify Installation
+
+```bash
+# List installed plugins
+copilot plugin list
+
+# In a Copilot CLI session, see all loaded skills
+/skills list
+```
+
+## Step 5: Use the Skills and Plugins
+
+### Coordination Skills
+
+Coordination skills (19+) are automatically available to your coordinator. They teach how Squad coordinators and agents work together.
+
+Example skills:
+- `coordinator-response-mode` — When to use Direct vs Lightweight vs Standard vs Full mode
+- `reviewer-protocol` — How reviewer rejection and lockout work
+- `error-recovery` — How to handle agent failures gracefully
+
+Your coordinator loads these on-demand:
 
 ```markdown
 Before routing work, check the Response Mode Selection protocol:
 See `.github/skills/coordinator-response-mode/SKILL.md` for the decision table.
 ```
 
-## Step 5: Keep Skills Up to Date
+### Domain Plugins
 
-### Option A: Manual Update (Simple)
+Plugins teach domain-specific knowledge and best practices. They're loaded per-project based on your team's needs.
+
+**Frontend plugin example:**
+- Vue 3 component patterns
+- Testing strategy
+- State management with Pinia
+- Styling architecture
+- Accessibility standards
+
+The frontend engineer on your team reads and follows these skills when building components.
+
+## Step 6: Keep Skills and Plugins Up to Date
+
+### Check for Updates
 
 ```bash
-# In your project
+npm outdated @davidbirchall/squad-skills
+```
+
+### Update to Latest Version
+
+```bash
 npm update @davidbirchall/squad-skills
-cp -r node_modules/@davidbirchall/squad-skills/.github/skills .github/
-git add .github/skills
-git commit -m "chore: update squad skills to v1.0.1"
-git push
+
+# Reinstall plugins to pick up new versions
+./node_modules/@davidbirchall/squad-skills/scripts/install-stack.sh web
+# or reinstall individual plugins:
+copilot plugin install ./node_modules/@davidbirchall/squad-skills/plugins/frontend
 ```
 
-### Option B: Batch Update (All Projects)
-
-Use the sync script from this repository to update all your projects at once:
-
-```bash
-# In the studio-agent-skills directory
-./scripts/sync-skills.sh /path/to/your/projects
-```
-
-The script will:
-- Scan for projects that depend on `@davidbirchall/squad-skills`
-- Update the dependency
-- Copy `.github/skills/` into each project
-- Report which projects were updated
-
-**Check without applying:**
-
-```bash
-./scripts/sync-skills.sh --check /path/to/your/projects
-```
-
-Shows which projects are out of sync without making changes.
+When you run `npm update`, it brings in the latest version of all plugins. Reinstalling plugins ensures Copilot CLI loads the new version from that npm package version.
 
 ## Directory Structure After Installation
 
@@ -120,123 +148,165 @@ Your project will look like:
 
 ```
 my-squad-project/
-├── .github/
-│   └── skills/                    ← Skills copied here
-│       ├── squad/
-│       ├── coordinator-response-mode/
-│       ├── agent-collaboration/
-│       └── ... (19+ skills)
-├── .squad/                        ← Your project-specific Squad config
+├── package.json                    ← Depends on @davidbirchall/squad-skills
+├── .squad/                         ← Project-specific Squad config
 │   ├── team.md
 │   ├── routing.md
 │   ├── agents/
 │   └── ...
-├── package.json                   ← Contains @davidbirchall/squad-skills dependency
-└── node_modules/
-    └── @davidbirchall/squad-skills/
+├── node_modules/
+│   └── @davidbirchall/squad-skills/ ← Contains all skills and plugins
+│       ├── .github/skills/         ← Coordination skills
+│       ├── plugins/                ← Domain plugins
+│       └── scripts/
+└── .copilot/ or .github/           ← Your project config
 ```
 
-## Customizing Skills Per Project
+Copilot CLI automatically discovers and caches plugins when you run `copilot plugin install`.
 
-If you need to customize a skill for a specific project:
+## Per-Project vs Global Installation
 
-1. **Copy the skill** from `.github/skills/{skill-name}/` into your own project
-2. **Edit it** as needed
-3. **Your coordinator** will use the local version first
+**Why install per-project instead of globally?**
 
-The coordinator loads skills with this precedence:
-1. **Local** — `.github/skills/` in your project (highest)
-2. **Fallback** — `node_modules/@davidbirchall/squad-skills/.github/skills/`
+✅ **Version control** — Each project pins the exact version it needs in package.json
+✅ **Independence** — Project A can use v1.1.0 while Project B uses v1.2.0
+✅ **Reproducibility** — Anyone running `npm install` gets the same versions
+✅ **Rollback** — Revert package.json if an update breaks something
+✅ **Portability** — Project dependencies are self-contained; no ambient global state
 
-## Versioning
+This is the npm standard and scales as your project count grows.
+
+## Customizing Plugins Per Project
+
+If a project needs a custom variant of a plugin:
+
+### Option A: Local Override
+
+1. Install the standard plugin:
+   ```bash
+   copilot plugin install ./node_modules/@davidbirchall/squad-skills/plugins/frontend
+   ```
+
+2. Edit the cached plugin locally (Copilot CLI caches plugins in a local directory)
+
+3. Your customizations only affect this project
+
+### Option B: Create a Local Plugin
+
+If the customization is significant:
+
+1. Copy the plugin into your project:
+   ```bash
+   cp -r node_modules/@davidbirchall/squad-skills/plugins/frontend .squad/plugins/frontend-custom
+   ```
+
+2. Edit `.squad/plugins/frontend-custom/plugin.json` and skills
+
+3. Load your local plugin:
+   ```bash
+   copilot plugin install ./.squad/plugins/frontend-custom
+   ```
+
+4. Other projects continue using the standard version
+
+## Versioning and Semantic Versioning
 
 The package follows **semantic versioning**:
 
-| Version Change | Meaning | Action |
-|---|---|---|
-| `1.0.0` → `1.0.1` | Patch (typos, clarifications) | Safe to update immediately |
-| `1.0.0` → `1.1.0` | Minor (new skills, backwards compatible) | Safe to update, review new skills |
-| `1.0.0` → `2.0.0` | Major (breaking changes) | Review carefully before updating |
+| Change | Version | Action |
+|--------|---------|--------|
+| Typo fix, clarification | `1.0.0` → `1.0.1` (PATCH) | Safe to update immediately |
+| New skill, new plugin | `1.0.0` → `1.1.0` (MINOR) | Safe to update, review new content |
+| Breaking change | `1.0.0` → `2.0.0` (MAJOR) | Review carefully before updating |
 
-**Check for updates:**
-
-```bash
-npm outdated @davidbirchall/squad-skills
-```
+**Recommendation:** Use `^1.1.0` in package.json to automatically accept PATCH and MINOR updates. Manually review and test MAJOR updates.
 
 ## Troubleshooting
 
 ### "npm ERR! 404 — Package not found"
 
-You likely don't have authentication configured. Run:
+You don't have authentication configured. Run:
 
 ```bash
 gh auth setup-git
+# or manually add your token to ~/.npmrc
 ```
 
 Then try again.
 
-### "Permission denied" error on sync script
+### "copilot plugin install: command not found"
 
-Make the script executable:
-
-```bash
-chmod +x scripts/sync-skills.sh
-```
-
-### Skills aren't loading in my coordinator
-
-1. Verify skills are in `.github/skills/`:
-   ```bash
-   ls .github/skills/
-   ```
-
-2. Check that your coordinator is in `.github/copilot-instructions.md` or `.squad/`:
-   ```bash
-   ls -la .github/copilot-instructions.md
-   ```
-
-3. If using dynamic references, verify `node_modules/` is intact:
-   ```bash
-   ls node_modules/@davidbirchall/squad-skills/.github/skills/
-   ```
-
-### "Different version across projects" warning
-
-Use the sync script to bring all projects in sync:
+Install Copilot CLI:
 
 ```bash
-./scripts/sync-skills.sh --check /path/to/projects
-./scripts/sync-skills.sh /path/to/projects
+brew install copilot-cli
+# or see https://github.com/github/copilot-cli
 ```
 
-## Skills vs Plugins: What's the Difference?
+### "Skills aren't loading in my coordinator"
 
-This library is a **Skills library**, not a Plugin marketplace. Here's why that matters:
+1. Verify the package is installed:
+   ```bash
+   ls node_modules/@davidbirchall/squad-skills
+   ```
 
-### Skills (What You're Using)
-- **Purpose:** Teach the **coordinator** and all agents **how to work together consistently**
-- **Scope:** Universal operational patterns (routing decisions, error recovery, review protocols)
-- **Discovery:** Loaded by coordinator on-demand from `.github/skills/`
-- **Reusability:** Used by every project, every agent, every role
-- **Example:** "Define how we handle reviewer rejections" or "Teach error recovery patterns"
+2. Verify plugins are installed:
+   ```bash
+   copilot plugin list
+   ```
 
-### Plugins (Different Purpose)
-- **Purpose:** Add domain expertise to **individual agents** during team setup
-- **Scope:** Role-specific knowledge (Kubernetes for DevOps, React for frontend, Azure for cloud)
-- **Discovery:** Marketplace search by role during "Add Team Member" flow
-- **Reusability:** Per-domain (Kubernetes plugin for DevOps agent only)
-- **Example:** "When adding a DevOps engineer, give them Kubernetes expertise" or "Give the frontend engineer React patterns"
+3. Restart Copilot CLI to pick up plugin changes:
+   ```bash
+   # Close any running Copilot CLI sessions and restart
+   ```
 
-**Your library is correct as a Skills package.** It teaches "How do we coordinate?" not "How do we build Kubernetes systems?"
+### "Which version am I running?"
 
-If you want to centralize domain expertise later (organizational testing standards, your Azure guidelines, etc.), you could create a **separate plugin marketplace** — but that's optional and independent.
+Check package-lock.json or run:
+
+```bash
+npm list @davidbirchall/squad-skills
+```
+
+### "Different versions across projects"
+
+All projects should use the same version for consistency. Update all projects together:
+
+```bash
+# In each project
+npm update @davidbirchall/squad-skills
+./node_modules/@davidbirchall/squad-skills/scripts/install-stack.sh web
+git add package-lock.json
+git commit -m "chore: update squad skills to v1.1.1"
+```
+
+## Coordination Skills vs Domain Plugins
+
+### Coordination Skills (`.github/skills/`)
+
+- Teach how your coordinator and agents work together
+- Everyone loads them
+- Examples: routing decisions, error recovery, reviewer protocols
+- Updates to coordination skills affect all projects
+
+**You don't choose which coordination skills to load** — they're available to your coordinator by default.
+
+### Domain Plugins (`plugins/`)
+
+- Teach how to build things in your stack
+- Load only the ones your project needs
+- Examples: Vue patterns, NestJS architecture, game design
+- Updates to domain plugins are gradual (install when you're ready)
+
+**You choose which domain plugins to install** based on your project's needs.
 
 ## Next Steps
 
-- 📖 Read [SKILLS_REGISTRY.md](../SKILLS_REGISTRY.md) for a complete skill catalog
-- 🚀 Check [README.md](../README.md) for usage patterns
-- 💬 [Contributing](../CONTRIBUTING.md) to add or improve skills
+1. ✅ Install `@davidbirchall/squad-skills` in a project
+2. ✅ Install the plugins your project needs
+3. 📖 Read [README.md](../README.md) for the complete plugin catalog
+4. 📖 Read [docs/ARCHITECTURE.md](./ARCHITECTURE.md) for the design philosophy
+5. 💬 [CONTRIBUTING.md](../CONTRIBUTING.md) if you want to add new skills or plugins
 
 ---
 

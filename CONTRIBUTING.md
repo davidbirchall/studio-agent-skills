@@ -183,22 +183,47 @@ Before merging a skill PR:
 - [ ] Plugin README.md is updated
 - [ ] Confidence level is accurate
 
-## Installing Plugins
+## Installing Plugins in a Project
 
-Single plugin:
+When adding plugins to a Squad project for the first time:
+
+### 1. Add the Package
 
 ```bash
-copilot plugin install ./plugins/your-plugin-name
+npm install --save-dev @davidbirchall/squad-skills
+```
+
+### 2. Install Plugins
+
+Option A: Single plugin
+```bash
+copilot plugin install ./node_modules/@davidbirchall/squad-skills/plugins/your-plugin-name
+```
+
+Option B: Use a stack
+```bash
+./node_modules/@davidbirchall/squad-skills/scripts/install-stack.sh web
+# or: game, ai, process, all
+```
+
+### 3. Verify Installation
+
+```bash
 copilot plugin list
+/skills list  # In a Copilot CLI session
 ```
 
-Stack of plugins:
+### 4. Updating Plugins
+
+To update to the latest version of the skills package (which brings new versions of all plugins):
 
 ```bash
-scripts/install-stack.sh web      # or game, ai, process, all
+npm update @davidbirchall/squad-skills
+# Reinstall plugins to pick up new versions
+copilot plugin install ./node_modules/@davidbirchall/squad-skills/plugins/your-plugin-name
 ```
 
-See [README.md](./README.md) for available stacks.
+Note: When you run the plugin install command again, it overwrites the cached version, so you're always running the latest plugin version for your installed npm package version.
 
 ## Publishing a Release
 

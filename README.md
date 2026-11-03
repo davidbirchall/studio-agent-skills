@@ -92,11 +92,39 @@ Routing rules are in `.squad/routing.md`.
 
 ## Install
 
-Single plugin:
+### Per-Project Installation (Recommended)
 
+Install the npm package in each Squad project that needs the plugins:
+
+```bash
+npm install --save-dev @davidbirchall/squad-skills
 ```
-copilot plugin install ./plugins/frontend
+
+Then install one or more plugins from the package:
+
+```bash
+# Single plugin
+copilot plugin install ./node_modules/@davidbirchall/squad-skills/plugins/frontend
 copilot plugin list
+
+# Or use the stack installer (convenience script)
+./node_modules/@davidbirchall/squad-skills/scripts/install-stack.sh web
+```
+
+### Quick Install Script
+
+For convenience, create a helper in each project:
+
+```bash
+#!/bin/bash
+# scripts/install-squad-plugins.sh
+SKILLS_PKG="./node_modules/@davidbirchall/squad-skills"
+copilot plugin install "$SKILLS_PKG/plugins/$1"
+```
+
+Then:
+```bash
+./scripts/install-squad-plugins.sh frontend
 ```
 
 ### Stacks
@@ -110,14 +138,13 @@ Copilot plugin marketplaces have no native bundle concept, so stacks are a scrip
 | `ai` | shared, backend, ai-engineering, platform-engineering, agent-practices, workflows |
 | `process` | product, game, creative, production, knowledge, business |
 
-```
-scripts/install-stack.sh web        # or game, ai, process, all
-scripts/install-stack.sh web --marketplace
+```bash
+# From the npm package
+./node_modules/@davidbirchall/squad-skills/scripts/install-stack.sh web
+# or: game, ai, process, all
 ```
 
-`--marketplace` installs `<plugin>@squad-skills` from the catalog in `.github/plugin/marketplace.json` (register the marketplace first with `copilot plugin marketplace add <path-or-repo>`; some organisations block marketplace sources by policy, in which case use the local-path install).
-
-Then run `/skills list` in a Copilot CLI session to confirm the skills are loaded. Local plugins are cached, so re-run the install command to pick up changes.
+After installation, run `/skills list` in a Copilot CLI session to confirm the skills are loaded. Local plugins are cached, so re-run the install command to pick up changes.
 
 ## Contributing
 

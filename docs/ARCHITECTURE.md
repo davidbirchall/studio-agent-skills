@@ -1,314 +1,346 @@
 # Architecture: @davidbirchall/squad-skills Library
 
-This document explains the design, distribution model, and use cases for the centralized Squad skills library.
+This document explains the plugin-based architecture, distribution model, and design patterns for the centralized Squad skills and plugins library.
 
 ## Overview
 
-**@davidbirchall/squad-skills** is a **reusable prompt library** containing 19+ decision frameworks, protocols, and operational patterns that teach Squad coordinators and agents how to work together consistently across all your projects.
+**@davidbirchall/squad-skills** is a **reusable plugin library** organized by domain. It contains:
 
-It is **NOT** a domain expertise library, plugin marketplace, or domain-specific toolkit. It's **coordination software encoded as prose**.
+1. **19+ coordination skills** (`.github/skills/`) — Decision frameworks and protocols for how Squad coordinators and agents work together
+2. **15+ domain plugins** (`plugins/`) — Skill collections organized by engineering discipline, game development, creative process, and business practices
+3. **Stack installers** — Pre-configured bundles of plugins for common use cases (web, game, ai, process)
+
+It is **NOT** a monolithic toolkit. Each plugin is independent and can be installed in any project that needs it.
+
+## Distribution Model: Per-Project Installation
+
+Each of your projects installs the plugins it needs:
+
+```
+my-squad-project/
+├── package.json                              (depends on @davidbirchall/squad-skills)
+├── node_modules/@davidbirchall/squad-skills/ (contains all plugins + skills)
+└── Copilot CLI loads plugins from here
+```
+
+**Key principle:** Plugins are installed **per-project**, not globally. This gives each project:
+- ✅ Version control over which plugin versions it uses
+- ✅ Independence from other projects' plugin updates
+- ✅ Ability to pin versions in package.json
+- ✅ Easy rollback if a plugin update breaks something
 
 ## What Problems Does It Solve?
 
 ### Problem 1: Inconsistent Coordinator Behavior
-**Without:** Each project has its own coordinator instructions. Over time, they drift. One project decides errors should be escalated, another decides to retry. No consistency.
+**Without:** Each project invents its own routing logic and error-recovery patterns.
 
-**With:** All projects load the same routing logic, error recovery patterns, and decision frameworks.
+**With:** All projects load the same coordination skills, ensuring consistent behavior.
 
-### Problem 2: Duplicate Decision Logic
-**Without:** You write the same "how do we handle reviewer rejections?" logic in every project's coordinator.
+### Problem 2: Duplicated Domain Expertise
+**Without:** You write the same "Vue component patterns" guide in every project.
 
-**With:** Write it once in a skill. All projects reference it.
+**With:** Write it once as a plugin. All projects load it when they need it.
 
-### Problem 3: No Shared Vocabulary
-**Without:** One team calls it "Direct Mode," another calls it "Quick Fix," another has no concept at all.
+### Problem 3: Organizational Scaling
+**Without:** You manage skills manually across 12+ projects. Updates are error-prone.
 
-**With:** All projects speak the same language: "Direct Mode," "Lightweight," "Standard," "Full."
+**With:** Bump the version in `package.json`, reinstall plugins, and all projects are in sync.
 
 ### Problem 4: Single Developer Scaling
-**Without:** As you add more projects (12, 20, 30), keeping them aligned becomes manual and error-prone.
+**Without:** As you add more projects and refine your practices, keeping them aligned is manual.
 
-**With:** One `npm install` and one sync command brings all projects in sync.
+**With:** Centralized library + per-project installation = scale without overhead.
 
-## Architecture
+## Architecture Layers
 
-### Layer 1: Skills Library (This Repo)
-
-```
-studio-agent-skills/  ← The source of truth
-├── .github/skills/   ← 19+ skills organized by domain
-│   ├── coordinator-response-mode/SKILL.md
-│   ├── reviewer-protocol/SKILL.md
-│   ├── error-recovery/SKILL.md
-│   └── ... (16 more)
-├── package.json      ← Metadata & versioning
-├── SKILLS_REGISTRY.md     ← Catalog & descriptions
-└── scripts/sync-skills.sh ← Bulk update tool
-```
-
-**Responsibility:** Author, test, version, and publish skills.
-
-### Layer 2: Distribution (npm + GitHub Packages)
+### Layer 1: This Repository (Source of Truth)
 
 ```
-Published to: npm.pkg.github.com/@davidbirchall/squad-skills
-
-Available as:
-  - npm package (v1.0.0 semver)
-  - Installable in any project
-  - Versioned & updateable
+studio-agent-skills/
+├── .github/skills/           ← 19+ coordination skills (Squad protocols)
+├── plugins/                  ← 15+ domain plugins
+│   ├── frontend/
+│   ├── backend/
+│   ├── game-development/
+│   └── ... (12 more)
+├── package.json              ← Version metadata
+├── scripts/install-stack.sh  ← Convenience installer
+└── .github/workflows/        ← Auto-publish on tag
 ```
 
-**Responsibility:** Provide reliable, versioned access to skills.
+**Responsibility:** Author, version, publish skills and plugins.
 
-### Layer 3: Projects (Your 12+ Squad Projects)
+### Layer 2: Distribution (GitHub Packages)
+
+```
+Published as: npm package @davidbirchall/squad-skills
+
+npm install @davidbirchall/squad-skills
+```
+
+Contains the complete library: all coordination skills + all plugins.
+
+**Responsibility:** Provide reliable, versioned access via npm.
+
+### Layer 3: Individual Projects (Your 12+ Squad Projects)
+
+Each project independently installs and pins plugins:
 
 ```
 my-squad-project/
-├── package.json (depends on @davidbirchall/squad-skills)
-├── .github/skills/ (copied from library)
-├── .squad/ (project-specific config & agents)
-└── coordinator.md (loads global skills + project overrides)
+├── package.json              ← Pins @davidbirchall/squad-skills@^1.1.0
+├── node_modules/
+│   └── @davidbirchall/squad-skills/
+│       ├── .github/skills/   ← Available to load via Copilot CLI
+│       └── plugins/          ← Available to install via copilot plugin install
+├── .squad/                   ← Project-specific config (team.md, routing.md, agents)
+└── (installed plugins are cached by Copilot CLI)
 ```
 
-**Responsibility:** Install, customize, stay in sync.
+**Responsibility:** Install the package, choose which plugins to load, keep in sync.
 
-## Use Cases
+## Plugins vs Coordination Skills
 
-### Use Case 1: New Project Setup
+This library contains two types of resources:
 
-1. Create a new Squad project
-2. `npm install @davidbirchall/squad-skills`
-3. `cp -r node_modules/@davidbirchall/squad-skills/.github/skills .github/`
-4. Get 19+ skills immediately; no need to invent your own decision frameworks
+### Coordination Skills (`.github/skills/`)
 
-### Use Case 2: Consistency Across Teams
+- **Scope:** How Squad coordinators and agents work together
+- **Audience:** All projects, all agents
+- **Examples:** Routing decisions, error recovery, reviewer protocols, decision capture
+- **Discovery:** Loaded by coordinator on-demand
+- **Reusability:** Universal (used by every agent across all projects)
+- **Installation:** Shipped with `@davidbirchall/squad-skills` npm package; available in `.github/skills/`
 
-1. All 12 projects reference the same `coordinator-response-mode` skill
-2. Same routing decisions everywhere
-3. Agent behavior is predictable across projects
-4. New team members onboard faster because patterns are consistent
+### Domain Plugins (`plugins/`)
 
-### Use Case 3: Major Update to Processes
+- **Scope:** Engineering expertise, domain knowledge, best practices per discipline
+- **Audience:** Agents working in that domain
+- **Examples:** Vue component patterns, NestJS architecture, game design, creative process
+- **Discovery:** Marketplace or local file path
+- **Reusability:** Per-domain (frontend engineer loads frontend plugin; game designer loads game-development plugin)
+- **Installation:** `copilot plugin install ./node_modules/@davidbirchall/squad-skills/plugins/frontend`
 
-1. You discover a better error-recovery strategy
-2. Update `error-recovery/SKILL.md` once
-3. Run `./scripts/sync-skills.sh /path/to/projects`
-4. All projects get the new pattern in minutes
-
-### Use Case 4: Project-Specific Customization
-
-1. Project A needs a stricter review protocol for compliance
-2. Copy `reviewer-protocol/SKILL.md` into Project A's `.github/skills/`
-3. Edit the local copy
-4. Project A uses local version; all others get the shared version
+**Think of it this way:**
+- **Skills** teach "how we work as a team"
+- **Plugins** teach "how to build X in our stack"
 
 ## Versioning Strategy
 
 ### Semantic Versioning
 
 ```
-1.0.0
+1.1.0
 ↑ ↑ ↑
-│ │ └─ PATCH: typo, clarification (safe to auto-update)
-│ └─── MINOR: new skill added, backwards compatible (review but safe)
-└───── MAJOR: breaking change to a skill contract (requires review)
+│ │ └─ PATCH: Typo fix, clarification (safe to auto-update)
+│ └─── MINOR: New skill added, new plugin, backwards compatible (review but safe)
+└───── MAJOR: Breaking change to a skill contract or plugin behavior (review carefully)
 ```
 
 ### Release Process
 
-1. Make changes to skills in `.github/skills/`
-2. Update `SKILLS_REGISTRY.md` if adding/removing skills
-3. Bump `package.json` version
-4. Create a git tag: `git tag v1.0.1`
-5. GitHub Actions publishes to npm automatically
-6. Projects update with `npm update @davidbirchall/squad-skills`
-
-## Skills Are Not Code
-
-This is important: **Skills are prose, not code.**
-
-- ✅ Skills teach **concepts** and **decision logic**
-- ✅ Skills encode **processes** and **patterns**
-- ✅ Skills are **human-readable** and **LLM-compatible**
-- ❌ Skills are not executable code
-- ❌ Skills are not JavaScript/Python/Go libraries
-- ❌ Skills don't require compilation or a build step
-
-They work like documentation that the coordinator and agents read and follow. They're distributed as markdown files inside an npm package.
-
-## Skills vs Plugins vs Capabilities
-
-### Skills (This Library)
-- **Scope:** Coordination & team behavior
-- **Audience:** All agents & coordinator
-- **Discovery:** Coordinator loads on-demand
-- **Installation:** `.github/skills/`
-- **Example:** "How do we route work?"
-
-### Plugins (Squad Plugin Marketplace)
-- **Scope:** Domain expertise per agent
-- **Audience:** Individual agents during team setup
-- **Discovery:** Marketplace search by role
-- **Installation:** `.squad/agents/{name}/skills/`
-- **Example:** "Azure patterns for a cloud engineer"
-
-### Capabilities (Agent Charter)
-- **Scope:** Individual agent boundaries
-- **Audience:** Single agent
-- **Discovery:** Embedded in agent's charter.md
-- **Installation:** `.squad/agents/{name}/charter.md`
-- **Example:** "This agent reviews code. It does NOT write code."
-
-**Your library is Skills. It's the right choice.**
-
-## Maintenance Model
-
-### You (Single Developer)
-
-- Author and update skills based on what works
-- Version releases (semver)
-- Review contributions (if open-sourced)
-
-### Your Projects (12+)
-
-- Stay in sync via periodic `npm update`
-- Can override locally if needed
-- Always have access to latest patterns
-
-### Future: Maybe Plugins
-
-If you build domain libraries (Kubernetes patterns, Azure guidelines, organizational testing standards), those would be **plugins**, registered in a separate marketplace. Skills and plugins are complementary, not competing.
+1. Make changes to skills (`.github/skills/`) or plugins (`plugins/`)
+2. Update version in affected `plugin.json` files
+3. Update `package.json` if needed (matches highest plugin version or breaking change)
+4. Commit and push
+5. Create a git tag: `git tag v1.1.0`
+6. GitHub Actions automatically publishes to GitHub Packages
+7. Projects update with `npm update @davidbirchall/squad-skills`
 
 ## File Structure Explained
 
 ```
 studio-agent-skills/
-├── .github/skills/                 ← What gets published
-│   ├── squad/
-│   │   └── SKILL.md                ← Interactive command catalog
-│   ├── coordinator-response-mode/
-│   │   └── SKILL.md                ← Routing mode decision table
-│   ├── error-recovery/
-│   │   └── SKILL.md                ← Error handling protocols
+│
+├── .github/skills/                       ← Coordination skills (published with npm package)
+│   ├── coordinator-response-mode/SKILL.md
+│   ├── reviewer-protocol/SKILL.md
+│   ├── agent-collaboration/SKILL.md
 │   └── ... (16 more skills)
 │
-├── .squad/                         ← Project's own Squad config (NOT published)
-│   ├── team.md
-│   ├── routing.md
-│   ├── agents/
-│   └── templates/                  ← Reference docs, not published
+├── plugins/                              ← Domain plugins (published with npm package)
+│   ├── shared/
+│   │   ├── plugin.json
+│   │   ├── README.md
+│   │   └── skills/
+│   ├── frontend/
+│   ├── backend/
+│   ├── game-development/
+│   └── ... (12 more plugins)
 │
 ├── scripts/
-│   └── sync-skills.sh              ← Helper for bulk updates
+│   └── install-stack.sh                  ← Convenience installer for plugin bundles
 │
 ├── docs/
-│   ├── SETUP_GUIDE.md              ← How to install & use
-│   ├── ARCHITECTURE.md             ← This file
-│   └── PLUGINS_vs_SKILLS.md        ← Architectural clarification
+│   ├── ARCHITECTURE.md                   ← This file
+│   ├── SETUP_GUIDE.md                    ← Per-project installation instructions
+│   └── skill-design-guide.md             ← How to write skills
 │
-├── package.json                    ← Metadata, version, publish config
-├── README.md                       ← Quick start & overview
-├── SKILLS_REGISTRY.md              ← Full catalog with descriptions
-├── CONTRIBUTING.md                 ← How to add/improve skills
+├── package.json                          ← Package metadata & version
+├── README.md                             ← Quick start & plugin catalog
+├── CONTRIBUTING.md                       ← How to add/improve skills & plugins
 └── .github/workflows/
-    └── publish-skills.yml          ← Auto-publish on tag
+    └── publish-skills.yml                ← Auto-publish on git tag
 ```
 
-The `files` field in `package.json` controls what gets published:
+The `"files"` field in `package.json` controls what npm publishes:
 
 ```json
 "files": [
-  ".github/skills",           ← Publish only the skills
-  "SKILLS_REGISTRY.md"        ← Catalog
+  ".github/skills",
+  "plugins",
+  "scripts/install-stack.sh",
+  "README.md"
 ]
 ```
 
-Everything else (`.squad/`, `docs/`, tests, etc.) stays in the repo but doesn't get shipped in the npm package.
+Everything else (`.squad/`, `docs/`, internal templates) stays in the repo but doesn't ship in the npm tarball.
 
-## Distribution Channels
+## Use Cases
 
-### GitHub Packages (Private, Recommended for Solo Dev)
-
-```bash
-npm install @davidbirchall/squad-skills
-# Requires authentication via ~/.npmrc or gh auth setup-git
-```
-
-**Pros:** No public registry needed, stays private, free tier available
-**Cons:** Requires GitHub auth
-
-### Public npm Registry (Future Option)
+### Use Case 1: New Project Setup
 
 ```bash
-npm install @davidbirchall/squad-skills
-# Anyone can install
+cd my-new-squad-project
+npm init -y
+npm install --save-dev @davidbirchall/squad-skills
+copilot plugin install ./node_modules/@davidbirchall/squad-skills/plugins/frontend
+copilot plugin install ./node_modules/@davidbirchall/squad-skills/plugins/backend
+# Get 40+ skills immediately; no need to invent your own
 ```
 
-**Pros:** Discoverable, no auth needed, standard distribution
-**Cons:** Makes it public (you can always do this later)
+### Use Case 2: Consistency Across All Projects
 
-### Git Submodule (Alternative for Projects)
+1. All 12 projects depend on `@davidbirchall/squad-skills@^1.1.0`
+2. All coordinators behave consistently (same routing logic, error recovery)
+3. All frontend engineers have access to the same component patterns
+4. All game developers follow the same design process
+5. Update once → all projects pick it up on `npm update`
+
+### Use Case 3: Major Update to Your Practices
 
 ```bash
-git submodule add https://github.com/davidbirchall/studio-agent-skills
+# Update error-recovery/SKILL.md with a better pattern
+# Bump version in package.json to 1.2.0
+git tag v1.2.0 && git push origin v1.2.0
+# GitHub Actions publishes automatically
+
+# In all projects:
+npm update @davidbirchall/squad-skills
+# copilot plugin install ... if plugin versions changed
 ```
 
-**Pros:** Always latest, no npm needed
-**Cons:** Manual updates, harder to version lock
+All projects now use the new pattern instantly.
 
-**Recommended:** Start with GitHub Packages (private, versioned). If you want broader sharing, switch to public npm later.
+### Use Case 4: Project-Specific Plugin Variant
 
-## Future Enhancements
-
-### Option 1: Local CLI Helper
+If Project A needs a stricter version of a plugin:
 
 ```bash
-squad-skills list        # List all skills
-squad-skills show coordinator-response-mode
-squad-skills sync        # Sync to current project
+# In Project A
+copilot plugin install ./node_modules/@davidbirchall/squad-skills/plugins/frontend
+# Edit the cached plugin locally (temporary customization)
+# Or keep a local override in .squad/skills/
 ```
 
-### Option 2: Web Discovery
+Other projects continue using the standard version from npm.
 
-```
-https://davidbirchall.dev/squad-skills/
-  ├── Coordinator Protocol
-  ├── Team Collaboration
-  ├── Process & Discipline
-  └── ...
-```
+## Installation Flow Explained
 
-Browse and search all skills with examples and linking.
+### First Time (Developer Perspective)
 
-### Option 3: Companion Plugin Marketplace
+```bash
+# 1. Add the package to project
+npm install --save-dev @davidbirchall/squad-skills
 
-If you centralize domain expertise, create `@davidbirchall/squad-plugins`:
+# 2. Choose plugins to install
+copilot plugin install ./node_modules/@davidbirchall/squad-skills/plugins/frontend
 
-```
-plugins/
-├── azure-cloud/SKILL.md
-├── python-testing/SKILL.md
-├── react-component-patterns/SKILL.md
-└── ...
+# 3. Copilot CLI caches the plugin locally and loads it
+copilot plugin list  # Verify it's installed
 ```
 
-Register: `squad plugin marketplace add @davidbirchall/squad-plugins`
+### Updating (Quarterly or As-Needed)
 
-But this is **separate from skills**. One does "how we coordinate," the other does "patterns for Azure/Python/React."
+```bash
+# 1. Update the npm package
+npm update @davidbirchall/squad-skills
+
+# 2. Reinstall plugins to pick up new versions
+copilot plugin install ./node_modules/@davidbirchall/squad-skills/plugins/frontend
+
+# 3. Done—Copilot CLI now uses the latest plugin version
+```
+
+## Skills vs Plugins vs Capabilities — Clear Boundaries
+
+| Aspect | Skills | Plugins | Capabilities |
+|--------|--------|---------|--------------|
+| **Purpose** | Teach how to coordinate | Teach domain expertise | Define agent boundaries |
+| **Scope** | Universal team behavior | Role-specific knowledge | Single agent rules |
+| **Audience** | All coordinators & agents | Agents in that domain | One agent |
+| **Discovery** | Loaded by coordinator | Marketplace or local path | In agent's charter.md |
+| **Example** | "How do we route work?" | "Vue 3 component patterns" | "You review; you don't write" |
+| **Storage** | `.github/skills/` | `plugins/` or marketplace | `.squad/agents/{name}/charter.md` |
+| **Reusability** | 100% across all projects | Per-domain (not all agents load it) | Only applies to one agent |
+
+**This library is both Skills + Plugins.** That's intentional and correct.
+
+## Maintenance Model
+
+### You (Single Developer)
+
+1. Refine practices as you work
+2. When a pattern is stable, add it as a skill
+3. When you specialize in a domain, add a plugin
+4. Version releases using semver
+5. Update npm package regularly
+
+### Your Projects (12+)
+
+1. Install `@davidbirchall/squad-skills` once
+2. Choose which plugins to load per-project
+3. Stay in sync via periodic `npm update`
+4. Can override locally if a project needs a variant
+5. Always have access to latest coordination skills
+
+### Future: Marketplace (Optional)
+
+If you want to share plugins beyond your personal projects:
+
+```bash
+copilot plugin marketplace add @davidbirchall/squad-skills
+copilot plugin install squad-skills/frontend --marketplace
+```
+
+But this is optional. Per-project npm installation is fully sufficient for your use case.
+
+## Why Per-Project Installation?
+
+You might wonder: "Why not install globally and have all projects reference it?"
+
+**Because:**
+
+1. **Version independence** — Project A can use v1.1.0 while Project B uses v1.2.0 without conflict
+2. **Offline access** — Projects work even if the npm registry is down (plugins are in node_modules)
+3. **Rollback safety** — Revert package.json and rebuild node_modules if a version breaks something
+4. **Explicit control** — Project's package.json declares exactly what it depends on (not ambient global state)
+5. **Team collaboration** — When you share a project, all dependencies are reproducible (anyone running `npm install` gets the same versions)
+
+This is the **npm standard distribution model**. It's proven, scalable, and works across solo dev → teams.
 
 ## Summary
 
-**You've built the right thing.** A centralized library of:
-- ✅ Coordination patterns
-- ✅ Decision frameworks
-- ✅ Operational protocols
-- ✅ Team conventions
+You've structured your library correctly as:
 
-Packaged as an **npm package** with **semantic versioning**, distributed via **GitHub Packages**, and installable across your **12+ Squad projects**.
+✅ A centralized npm package containing both coordination skills and domain plugins
+✅ Versioned with semantic versioning
+✅ Distributed via GitHub Packages
+✅ Installed per-project using standard npm tooling
+✅ Plugins loaded selectively via Copilot CLI per-project
 
-This gives you **consistency at scale** without the overhead of a complex system.
+This gives you **consistency at scale** (all projects follow the same coordination patterns) **without overhead** (npm handles versioning and distribution).
 
 ---
 
-**Next:** Read [SETUP_GUIDE.md](./SETUP_GUIDE.md) to install in your first project, or [CONTRIBUTING.md](../CONTRIBUTING.md) to add new skills.
+**Next:** Read [SETUP_GUIDE.md](./SETUP_GUIDE.md) to install in a project, or [CONTRIBUTING.md](../CONTRIBUTING.md) to add new skills and plugins.
