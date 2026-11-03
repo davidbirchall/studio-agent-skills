@@ -77,28 +77,6 @@ Documented practices, conventions, and decision frameworks used throughout Squad
 | **squad-conventions** | Core conventions and patterns used in the Squad codebase | Baseline context | `.github/skills/squad-conventions/SKILL.md` |
 | **squad-help** | How to actually use Squad — team setup, commands, initialization | First-time use | `.github/skills/squad-help/SKILL.md` |
 
-### Creative & Ideas
-
-Tools for capturing, developing, and preserving ideas systematically.
-
-| Skill | Purpose | When to load | Location |
-|-------|---------|--------------|----------|
-| **idea-capture** | Capture, clarify, and develop creative ideas (mechanics, concepts, story, technology, etc.) with enough substance for future revisiting | Recording a new idea | `.github/skills/idea-capture/SKILL.md` |
-
-### Vue 3 Development
-
-Reusable patterns and standards for Vue 3 projects using Composition API, Pinia, TanStack Query, and TypeScript.
-
-| Skill | Purpose | When to load | Location |
-|-------|---------|--------------|----------|
-| **vue-component-patterns** | Composition API components, TypeScript props/emits, atomic design hierarchy, design-driven development, scoped CSS styling | Starting new Vue component | `.github/skills/vue-component-patterns/SKILL.md` |
-| **vue-container-presenter-pattern** | Smart Container / Dumb Presenter split, clear separation of data management and presentation, reusable presenters, testable containers | Structuring feature components | `.github/skills/vue-container-presenter-pattern/SKILL.md` |
-| **vue-state-management** | Pinia store patterns, state boundaries (dumb components, smart containers), TanStack Query integration, application vs component state | Implementing state management | `.github/skills/vue-state-management/SKILL.md` |
-| **vue-testing-strategy** | Vitest + Vue Testing Library, presenter/container testing, store testing, TanStack Query testing with MSW, Playwright E2E | Writing tests before features | `.github/skills/vue-testing-strategy/SKILL.md` |
-| **vue-styling-architecture** | Design token system, CSS variables for theming, scoped CSS patterns, dark mode support via prefers-color-scheme, semantic class naming | Implementing component styles | `.github/skills/vue-styling-architecture/SKILL.md` |
-| **vue-form-validation** | Form state management, client + server validation, error display patterns, accessibility, submission flow, multi-step forms | Building forms | `.github/skills/vue-form-validation/SKILL.md` |
-| **vue-accessibility** | Semantic HTML, ARIA attributes, keyboard navigation, focus management, accessible components, axe testing, WCAG 2.1 AA compliance | Ensuring component accessibility | `.github/skills/vue-accessibility/SKILL.md` |
-
 ## Skill Usage in Projects
 
 ### Option 1: Copy Skills into Your Project (Recommended for Private Use)
@@ -161,7 +139,8 @@ MIT — reuse freely within the @davidbirchall scope and with attribution.
 
 ---
 
-**Last updated:** 2026-10-28  
+**Last updated:** 2026-11-02  
 **Package:** @davidbirchall/squad-skills  
 **Registry:** GitHub Packages  
-**Total Skills:** 27 (19 Coordinator + 7 Vue 3 Development + 1 Creative)
+**Total Skills:** 19 (Coordinator Protocol only)  
+**Note:** Vue 3 and Creative plugins are now managed via `/plugins` directory

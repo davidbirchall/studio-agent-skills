@@ -1,187 +1,128 @@
-# @davidbirchall/squad-skills
+# squad-skills
 
-> Centralized Squad skills library for AI team coordination — reusable prompt patterns, decision frameworks, and operational protocols.
+A repository of reusable skills, written to guide an AI agent working for one individual, not a team or organisation, for [Squad](https://github.com/bradygaster/squad), the AI team framework for GitHub Copilot.
 
-This package contains **19+ battle-tested skills** for [Squad](https://github.com/bradygaster/squad), the AI team framework. Skills empower coordinators to orchestrate specialized agents and help agents collaborate effectively.
+This is a self-contained, theoretical project for exploring how a domain-organised skill set can work. It is not tied to any employer's architecture, tooling or internal packages.
 
-## Quick Start
+## Layout
 
-### 1. Install
+| Path | Purpose |
+|------|---------|
+| `plugins/<domain>/` | One Copilot CLI plugin: `plugin.json`, `README.md`, `skills/<name>/SKILL.md` |
+| `.github/plugin/marketplace.json` | Marketplace catalog listing every plugin |
+| `scripts/install-stack.sh` | Installs a named stack of plugins |
+| `.squad/skills/` | This repo's own team-earned skills (not distributed) |
+| `.github/skills/` | Skills bundled by Squad (managed by `squad init` / `squad upgrade`; don't edit) |
+| `.squad/` | Team state: roster, routing, decisions, charters |
+| `.github/agents/squad.agent.md` | Squad coordinator (managed by Squad) |
 
-```bash
-npm install @davidbirchall/squad-skills --save-dev
+## Plugins
+
+One plugin per domain under `plugins/`, each with its own `plugin.json`, version and README listing its skills.
+
+### Engineering
+
+| Plugin | Skills | Summary |
+|--------|--------|---------|
+| [`squad-skills-shared`](plugins/shared/README.md) | 13 | Shared engineering capabilities that apply across frontend, backend, AI and game development |
+| [`squad-skills-frontend`](plugins/frontend/README.md) | 23 | Frontend skills for Vue 3 / Nuxt 3 / TypeScript |
+| [`squad-skills-backend`](plugins/backend/README.md) | 24 | Backend skills for Node.js / NestJS / Fastify / Prisma / TypeScript |
+| [`squad-skills-data`](plugins/data/README.md) | 7 | Data engineering skills distinct from general backend work |
+| [`squad-skills-platform-engineering`](plugins/platform-engineering/README.md) | 11 | Provider-neutral DevOps and platform engineering skills |
+| [`squad-skills-ai-engineering`](plugins/ai-engineering/README.md) | 16 | AI engineering skills for LLM-powered applications and agent systems |
+
+### Game development
+
+| Plugin | Skills | Summary |
+|--------|--------|---------|
+| [`squad-skills-game-development`](plugins/game-development/README.md) | 24 | Game development engineering skills for Unity and C# |
+| [`squad-skills-creative-technology`](plugins/creative-technology/README.md) | 8 | Creative technology and asset pipeline skills for Unity |
+
+### Process
+
+| Plugin | Skills | Summary |
+|--------|--------|---------|
+| [`squad-skills-product`](plugins/product/README.md) | 6 | Product process skills |
+| [`squad-skills-game`](plugins/game/README.md) | 7 | Engine-agnostic game design skills |
+| [`squad-skills-creative`](plugins/creative/README.md) | 6 | Creative-process skills for games, film, animation, books, and brands |
+| [`squad-skills-production`](plugins/production/README.md) | 7 | Production-process skills for software, games, and creative projects |
+| [`squad-skills-agent-practices`](plugins/agent-practices/README.md) | 7 | Working practices for an AI agent serving one person |
+| [`squad-skills-business`](plugins/business/README.md) | 5 | Solo-business skills: licensing, privacy, pricing, payments, analytics |
+| [`squad-skills-workflows`](plugins/workflows/README.md) | 9 | End-to-end recipe skills that sequence the other plugins |
+| [`squad-skills-knowledge`](plugins/knowledge/README.md) | 8 | Domain-agnostic knowledge-work skills |
+
+Plugins are independent. A skill may mention skills in other plugins in a short "See also" note; the one hard dependency is that `frontend-architecture` and `frontend-design-systems` refer to `typescript-conventions` in the shared plugin.
+
+
+## Skill format
+
+Each skill is a directory containing a `SKILL.md`:
+
 ```
-
-### 2. Add to Your Squad Project
-
-Copy skills into your `.github/skills/` directory:
-
-```bash
-cp -r node_modules/@davidbirchall/squad-skills/.github/skills .github/
+.squad/skills/{skill-name}/SKILL.md
 ```
-
-Or reference directly in your coordinator instructions:
 
 ```markdown
-<!-- Load from centralized library -->
-See `.github/skills/squad/SKILL.md` for the interactive command catalog.
+---
+name: skill-name
+description: What the skill does and when an agent should load it.
+---
+
+# Instructions
+...
 ```
 
-### 3. Start Using Skills
+Rules:
+- The directory name matches `name`.
+- The description states when to use the skill.
+- One purpose per skill.
 
-Skills are loaded on-demand by your Squad coordinator. For example:
+## Team
 
-```markdown
-Relevant skill: node_modules/@davidbirchall/squad-skills/.github/skills/coordinator-response-mode/SKILL.md
-```
+| Member | Role |
+|--------|------|
+| David Birchall | Product Owner / Creative Director (human) |
+| Lead | Design review, triage, scope |
+| Skill Author | Writes skills |
+| Skill Tester | Validates skills |
+| Docs | README and catalog |
+| Scribe, Ralph, Rai, Fact Checker | Built-in support members |
 
-The coordinator reads the skill before making routing decisions.
+Routing rules are in `.squad/routing.md`.
 
-## What's Included
+## Install
 
-This library includes 19+ skills organized into 6 domains:
-
-### 🏗️ **Coordinator Protocol** (4 skills)
-Core Squad orchestration: team initialization, routing modes, source-of-truth hierarchy.
-- `squad` — Interactive command catalog
-- `coordinator-init-mode` — Two-phase team setup
-- `coordinator-response-mode` — Work routing decision table
-- `coordinator-source-of-truth` — File governance & conflict resolution
-
-### 🤝 **Team Collaboration** (4 skills)
-Multi-agent patterns: worktree awareness, cross-squad delegation, error recovery.
-- `agent-collaboration` — Standard collaboration patterns
-- `cross-squad` — Multi-squad instance coordination
-- `cross-squad-communication` — Inter-squad delegation protocols
-- `error-recovery` — Failure & adaptation patterns
-
-### ✅ **Process & Discipline** (3 skills)
-Quality gates: review protocols, test design, security practices.
-- `reviewer-protocol` — Rejection workflow & lockout semantics
-- `test-discipline` — Contract-driven assertion design
-- `secret-handling` — Credential & sensitive-data protection
-
-### 🔀 **Git & Workflow** (3 skills)
-Branching strategy, version management, session recovery.
-- `git-workflow` — Dev-first branching model
-- `squad-version-check` — Upgrade & versioning mechanics
-- `session-recovery` — Resume interrupted sessions
-
-### 🧠 **Memory & Learning** (3 skills)
-Knowledge capture and reuse: tiered memory, reflection, iterative retrieval.
-- `tiered-memory` — Three-tier memory model
-- `reflect` — Learning capture system
-- `iterative-retrieval` — Sub-task protocol with validation
-
-### 📖 **Convention & Standards** (2 skills)
-Documented practices and baseline knowledge.
-- `squad-conventions` — Core patterns & naming rules
-- `squad-help` — Comprehensive Squad usage guide
-
-**Full registry:** See [SKILLS_REGISTRY.md](./SKILLS_REGISTRY.md) for detailed descriptions, when to load each skill, and usage examples.
-
-## Design
-
-Each skill is a standalone `.md` file that:
-- **Defines scope** — what the skill teaches (1-line description)
-- **Explains when to load it** — triggers and decision points
-- **Provides full context** — no placeholder references
-- **Remains self-contained** — readable in isolation, but composable with others
-
-Skills are *not* code libraries. They're **prompt patterns** — structured text that encodes decision logic, processes, and conventions. They work with any LLM running Squad.
-
-## Usage Patterns
-
-### Pattern 1: Copy into Your Project (Recommended)
-
-Best for: Private projects, most control, local modifications.
-
-```bash
-cp -r node_modules/@davidbirchall/squad-skills/.github/skills .github/
-git add .github/skills
-git commit -m "chore: import @davidbirchall/squad-skills v1.0.0"
-```
-
-Your coordinator reads skills from the local `.github/skills/` directory.
-
-### Pattern 2: Reference from node_modules
-
-Best for: Minimal disk footprint, always in sync with package version.
-
-In your coordinator instructions or agent spawn prompts:
+Single plugin:
 
 ```
-Relevant skill: node_modules/@davidbirchall/squad-skills/.github/skills/squad/SKILL.md
+copilot plugin install ./plugins/frontend
+copilot plugin list
 ```
 
-The coordinator loads it dynamically. Requires running `npm install` before use.
+### Stacks
 
-### Pattern 3: MCP Server Integration
+Copilot plugin marketplaces have no native bundle concept, so stacks are a script over the plugins:
 
-Best for: Tool-based loading, advanced workflows.
+| Stack | Plugins |
+|-------|---------|
+| `web` | shared, frontend, backend, data, platform-engineering, agent-practices, workflows |
+| `game` | shared, game-development, creative-technology, game, agent-practices, workflows |
+| `ai` | shared, backend, ai-engineering, platform-engineering, agent-practices, workflows |
+| `process` | product, game, creative, production, knowledge, business |
 
-If you're using an MCP server that supports skill discovery:
-
-```json
-{
-  "skillPaths": [
-    "node_modules/@davidbirchall/squad-skills/.github/skills"
-  ]
-}
+```
+scripts/install-stack.sh web        # or game, ai, process, all
+scripts/install-stack.sh web --marketplace
 ```
 
-The MCP server exposes skills as discoverable tools.
+`--marketplace` installs `<plugin>@squad-skills` from the catalog in `.github/plugin/marketplace.json` (register the marketplace first with `copilot plugin marketplace add <path-or-repo>`; some organisations block marketplace sources by policy, in which case use the local-path install).
 
-## Versioning
-
-This package follows **semantic versioning**:
-
-| Change | Bump | Notes |
-|--------|------|-------|
-| New skills added | Minor | Backwards compatible |
-| Skill content clarified/updated | Patch | No behavior change |
-| Skill contract or structure changed | Major | Review required before upgrade |
-| Breaking change to Squad coordinator interface | Major | Update your coordinator instructions |
-
-Check [GitHub Releases](https://github.com/davidbirchall/studio-agent-skills/releases) for detailed release notes.
-
-### Upgrading
-
-```bash
-npm update @davidbirchall/squad-skills
-```
-
-Then re-copy skills to your project (Pattern 1) or verify node_modules references (Pattern 2).
+Then run `/skills list` in a Copilot CLI session to confirm the skills are loaded. Local plugins are cached, so re-run the install command to pick up changes.
 
 ## Contributing
 
-Found a bug? Have a skill to contribute? Ideas for improvements?
+See [docs/skill-design-guide.md](docs/skill-design-guide.md) for how to design, write and check skills.
 
-1. **Open an issue** to discuss (don't surprise with a large PR)
-2. **Create a feature branch:** `git checkout -b squad/your-skill-name`
-3. **Add or edit skills** in `.github/skills/{skill-name}/SKILL.md`
-4. **Update SKILLS_REGISTRY.md** with new entries
-5. **Open a PR** with rationale and examples
-6. **After merge**, a release is tagged and published to npm
-
-Skills are authored by:
-- **Coordinator team** — squad orchestration & routing protocols
-- **Agents** — patterns learned from successful work (via the `reflect` skill)
-- **Community** — project-specific playbooks that generalize well
-
-## License
-
-MIT — Reuse freely with attribution.
-
-## Support
-
-- 📖 [SKILLS_REGISTRY.md](./SKILLS_REGISTRY.md) — Complete skill catalog
-- 🚀 [Squad Documentation](https://github.com/bradygaster/squad) — Using Squad in your projects
-- 💬 Open an issue for questions or suggestions
-
----
-
-**Package:** @davidbirchall/squad-skills  
-**Repository:** https://github.com/davidbirchall/studio-agent-skills  
-**Registry:** GitHub Packages (`npm.pkg.github.com`)  
-**License:** MIT
+1. Open an issue with the `squad` label; the Lead triages it.
+2. Work on a `squad/{issue-number}-{slug}` branch.
+3. Open a PR referencing the issue (`Closes #N`).
