@@ -10,7 +10,10 @@
   "files": [
     ".github/skills",
     "plugins",
-    "README.md"
+    "scripts/install-stack.sh",
+    "docs",
+    "README.md",
+    "CONTRIBUTING.md"
   ],
   "keywords": [
     "squad",
